@@ -1,0 +1,392 @@
+
+CREATE DATABASE IF NOT EXISTS ama
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+USE ama;
+
+CREATE TABLE IF NOT EXISTS ama.amafiles (
+  id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  ats_id tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  ats_name varchar(16) NOT NULL DEFAULT '',
+  dateFileName varchar(10) NOT NULL DEFAULT '',
+  FileName varchar(16) NOT NULL DEFAULT '',
+  FullPathToFile varchar(128) NOT NULL DEFAULT '',
+  inDB tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  offset_0_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  offset_3_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  offset_6_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  offset_9_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  offset_12_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  offset_15_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  offset_18_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  offset_21_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  cntRec_0_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  cntRec_3_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  cntRec_6_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  cntRec_9_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  cntRec_12_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  cntRec_15_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  cntRec_18_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  cntRec_21_hour int(11) UNSIGNED NOT NULL DEFAULT 0,
+  firstCopyTime datetime DEFAULT NULL,
+  lastCopyTime datetime DEFAULT NULL,
+  currentOffset int(11) UNSIGNED NOT NULL DEFAULT 0,
+  lastAppendDataTime datetime DEFAULT NULL,
+  lastCountInsertedRows int(11) UNSIGNED NOT NULL DEFAULT 0,
+  getlastError tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  closed tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.amapart1 (
+  answer bit(1) NOT NULL DEFAULT b'0',
+  datetime_unix int(11) UNSIGNED NOT NULL DEFAULT 0,
+  phoneNumberA varchar(32) NOT NULL DEFAULT '',
+  phoneNumberB varchar(32) NOT NULL DEFAULT '',
+  callDuration varchar(5) NOT NULL DEFAULT '',
+  offset int(11) UNSIGNED NOT NULL DEFAULT 0
+)
+ENGINE = MYISAM
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.amapart2 (
+  answer bit(1) NOT NULL DEFAULT b'0',
+  datetime_unix int(11) UNSIGNED NOT NULL DEFAULT 0,
+  phoneNumberA varchar(32) NOT NULL DEFAULT '',
+  phoneNumberB varchar(32) NOT NULL DEFAULT '',
+  callDuration varchar(5) NOT NULL DEFAULT '',
+  offset int(11) UNSIGNED NOT NULL DEFAULT 0
+)
+ENGINE = MYISAM
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.amarecord (
+  ats_id tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  answer tinyint(1) NOT NULL DEFAULT 0,
+  callDuration smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  dateOfCall date NOT NULL DEFAULT '0000-00-00',
+  datetime_unix int(11) UNSIGNED NOT NULL DEFAULT 0,
+  phoneNumberA varchar(22) NOT NULL DEFAULT '-',
+  phoneNumberB varchar(22) NOT NULL DEFAULT '-',
+  offset int(11) UNSIGNED NOT NULL DEFAULT 0,
+  idFileName int(11) UNSIGNED NOT NULL DEFAULT 0
+/*INDEX datetime_unix (datetime_unix),
+  INDEX PhoneA_PhoneB (phoneNumberA, phoneNumberB, answer, callDuration, offset, idFileName, datetime_unix),
+  INDEX PhoneB (phoneNumberB, answer, callDuration, offset, idFileName, datetime_unix)
+*/
+)
+ENGINE = MYISAM
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci
+PARTITION BY RANGE (YEAR(dateOfCall) - 1)
+SUBPARTITION BY HASH (MONTH(dateOfCall))
+(
+PARTITION p_2011 VALUES LESS THAN (2011)
+(
+SUBPARTITION p_2011sp0,
+SUBPARTITION p_2011sp1,
+SUBPARTITION p_2011sp2,
+SUBPARTITION p_2011sp3,
+SUBPARTITION p_2011sp4,
+SUBPARTITION p_2011sp5,
+SUBPARTITION p_2011sp6,
+SUBPARTITION p_2011sp7,
+SUBPARTITION p_2011sp8,
+SUBPARTITION p_2011sp9,
+SUBPARTITION p_2011sp10,
+SUBPARTITION p_2011sp11,
+SUBPARTITION p_2011sp12
+),
+PARTITION p_2012 VALUES LESS THAN (2012)
+(
+SUBPARTITION p_2012sp0,
+SUBPARTITION p_2012sp1,
+SUBPARTITION p_2012sp2,
+SUBPARTITION p_2012sp3,
+SUBPARTITION p_2012sp4,
+SUBPARTITION p_2012sp5,
+SUBPARTITION p_2012sp6,
+SUBPARTITION p_2012sp7,
+SUBPARTITION p_2012sp8,
+SUBPARTITION p_2012sp9,
+SUBPARTITION p_2012sp10,
+SUBPARTITION p_2012sp11,
+SUBPARTITION p_2012sp12
+),
+PARTITION p_2013 VALUES LESS THAN (2013)
+(
+SUBPARTITION p_2013sp0,
+SUBPARTITION p_2013sp1,
+SUBPARTITION p_2013sp2,
+SUBPARTITION p_2013sp3,
+SUBPARTITION p_2013sp4,
+SUBPARTITION p_2013sp5,
+SUBPARTITION p_2013sp6,
+SUBPARTITION p_2013sp7,
+SUBPARTITION p_2013sp8,
+SUBPARTITION p_2013sp9,
+SUBPARTITION p_2013sp10,
+SUBPARTITION p_2013sp11,
+SUBPARTITION p_2013sp12
+),
+PARTITION p_2014 VALUES LESS THAN (2014)
+(
+SUBPARTITION p_2014sp0,
+SUBPARTITION p_2014sp1,
+SUBPARTITION p_2014sp2,
+SUBPARTITION p_2014sp3,
+SUBPARTITION p_2014sp4,
+SUBPARTITION p_2014sp5,
+SUBPARTITION p_2014sp6,
+SUBPARTITION p_2014sp7,
+SUBPARTITION p_2014sp8,
+SUBPARTITION p_2014sp9,
+SUBPARTITION p_2014sp10,
+SUBPARTITION p_2014sp11,
+SUBPARTITION p_2014sp12
+),
+PARTITION p_2015 VALUES LESS THAN (2015)
+(
+SUBPARTITION p_2015sp0,
+SUBPARTITION p_2015sp1,
+SUBPARTITION p_2015sp2,
+SUBPARTITION p_2015sp3,
+SUBPARTITION p_2015sp4,
+SUBPARTITION p_2015sp5,
+SUBPARTITION p_2015sp6,
+SUBPARTITION p_2015sp7,
+SUBPARTITION p_2015sp8,
+SUBPARTITION p_2015sp9,
+SUBPARTITION p_2015sp10,
+SUBPARTITION p_2015sp11,
+SUBPARTITION p_2015sp12
+),
+PARTITION p_2016 VALUES LESS THAN (2016)
+(
+SUBPARTITION p_2016sp0,
+SUBPARTITION p_2016sp1,
+SUBPARTITION p_2016sp2,
+SUBPARTITION p_2016sp3,
+SUBPARTITION p_2016sp4,
+SUBPARTITION p_2016sp5,
+SUBPARTITION p_2016sp6,
+SUBPARTITION p_2016sp7,
+SUBPARTITION p_2016sp8,
+SUBPARTITION p_2016sp9,
+SUBPARTITION p_2016sp10,
+SUBPARTITION p_2016sp11,
+SUBPARTITION p_2016sp12
+)
+);
+
+CREATE TABLE IF NOT EXISTS ama.amarecordtemp (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  ats_id tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  answer tinyint(1) NOT NULL DEFAULT 0,
+  callDuration smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  dateOfCall date NOT NULL DEFAULT '0000-00-00',
+  datetime_unix int(11) UNSIGNED NOT NULL DEFAULT 0,
+  phoneNumberA varchar(22) NOT NULL DEFAULT '-',
+  phoneNumberB varchar(22) NOT NULL DEFAULT '-',
+  offset int(11) UNSIGNED NOT NULL DEFAULT 0,
+  idFileName smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id, dateOfCall)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.amarecordtemp1 (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  ats_id tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  answer tinyint(1) NOT NULL DEFAULT 0,
+  callDuration smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  dateOfCall date NOT NULL DEFAULT '0000-00-00',
+  datetime_unix int(11) UNSIGNED NOT NULL DEFAULT 0,
+  phoneNumberA varchar(22) NOT NULL DEFAULT '-',
+  phoneNumberB varchar(22) NOT NULL DEFAULT '-',
+  offset int(11) UNSIGNED NOT NULL DEFAULT 0,
+  idFileName smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.amarecordtemp2 (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  ats_id tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  answer tinyint(1) NOT NULL DEFAULT 0,
+  callDuration smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  dateOfCall date NOT NULL DEFAULT '0000-00-00',
+  datetime_unix int(11) UNSIGNED NOT NULL DEFAULT 0,
+  phoneNumberA varchar(22) NOT NULL DEFAULT '-',
+  phoneNumberB varchar(22) NOT NULL DEFAULT '-',
+  offset int(11) UNSIGNED NOT NULL DEFAULT 0,
+  idFileName smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.amasourcestorage (
+  id smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  path varchar(512) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.amastorage (
+  id smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  ats_id tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  pattern_id tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  path varchar(512) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.amatargetstorage (
+  id smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  path varchar(512) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.amauser (
+  id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  name varchar(32) NOT NULL DEFAULT '',
+  password varchar(32) NOT NULL DEFAULT '',
+  lastLogOn datetime DEFAULT '0000-00-00 00:00:00',
+  disableLogin tinyint(3) UNSIGNED DEFAULT NULL,
+  limit_Select smallint(5) UNSIGNED DEFAULT NULL,
+  codeRegion tinyint(3) UNSIGNED DEFAULT NULL,
+  showMessage tinyint(1) UNSIGNED DEFAULT NULL,
+  message text DEFAULT NULL,
+  currentVersion varchar(16) DEFAULT NULL,
+  comment varchar(128) DEFAULT NULL,
+  date datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.ats (
+  id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  name varchar(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.csvfiles (
+  id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  ats_id tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  dateFileName varchar(10) DEFAULT NULL,
+  FullPathToFile varchar(128) NOT NULL DEFAULT '',
+  lastFileSize int(11) UNSIGNED NOT NULL DEFAULT 0,
+  closed tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.mainpackage (
+  id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  answer bit(1) DEFAULT NULL,
+  useOfServices bit(1) DEFAULT NULL,
+  userEnter bit(1) DEFAULT NULL,
+  analogSubscriber bit(1) DEFAULT NULL,
+  digitalSubscriber bit(1) DEFAULT NULL,
+  connectionCentrex bit(1) DEFAULT NULL,
+  amaConnection bit(1) DEFAULT NULL,
+  iarConnection bit(1) DEFAULT NULL,
+  singleRecord bit(1) DEFAULT NULL,
+  beginRecord bit(1) DEFAULT NULL,
+  intermediateRecord bit(1) DEFAULT NULL,
+  endRecord bit(1) DEFAULT NULL,
+  dateOfCall date DEFAULT NULL,
+  timeOfCall time DEFAULT NULL,
+  categorySubscriber varchar(2) DEFAULT NULL,
+  phoneNumberA varchar(32) DEFAULT NULL,
+  phoneNumberB varchar(32) DEFAULT NULL,
+  callDuration varchar(5) DEFAULT NULL,
+  connectionIdentifier varchar(10) DEFAULT NULL,
+  offset int(11) UNSIGNED DEFAULT 0,
+  dtm timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  INDEX phoneNumberA (phoneNumberA)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.pattern (
+  id tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  ats_id tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  name varchar(64) NOT NULL DEFAULT '',
+  dayname_pattern varchar(64) NOT NULL DEFAULT '',
+  monthname_pattern varchar(64) NOT NULL DEFAULT '',
+  yearname_pattern varchar(64) NOT NULL DEFAULT '',
+  foldername_pattern varchar(64) NOT NULL DEFAULT '',
+  subfoldername_pattern varchar(64) NOT NULL DEFAULT '',
+  filename_pattern varchar(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+CREATE TABLE IF NOT EXISTS ama.searchtask (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  user_id int(11) UNSIGNED DEFAULT 0,
+  answer tinyint(1) UNSIGNED DEFAULT 0,
+  phoneNumberA varchar(32) DEFAULT '-',
+  phoneNumberB varchar(32) DEFAULT '-',
+  firstSearchDate date DEFAULT '0000-00-00',
+  lastSearchDate date DEFAULT '0000-00-00',
+  countFilesForSearch smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  countFoundedCalls int(11) UNSIGNED DEFAULT 0,
+  startSearchDateTime datetime DEFAULT '0000-00-00 00:00:00',
+  finishSearchDateTime datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (id)
+)
+ENGINE = MYISAM
+AUTO_INCREMENT = 1
+CHARACTER SET cp1251
+COLLATE cp1251_general_ci;
+
+
+
+USE ama;
+
+CREATE INDEX datetime_unix ON amarecord(datetime_unix) USING BTREE;
+CREATE INDEX PhoneA_PhoneB ON amarecord(PhoneNumberA,PhoneNumberB,answer,callDuration,offset,idFileName,datetime_unix) USING BTREE;
+CREATE INDEX PhoneB ON amarecord(PhoneNumberB,answer,callDuration,offset,idFileName,datetime_unix) USING BTREE;
